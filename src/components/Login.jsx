@@ -1,9 +1,16 @@
 import axios from "axios";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
+import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("donaldtrump@gmail.com");
+  const [password, setPassword] = useState("Donaldtrump@123!");
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -15,12 +22,31 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:7777/login", {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        BASE_URL + "/login",
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(addUser(res.data));
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-      console.log(res.data);
+  const handleLogout = async () => {
+    try {
+      await axios.post(BASE_URL + "/logout", null, {
+        withCredentials: true,
+      });
+      dispatch(addUser(null));
+      setEmail("");
+      setPassword("");
     } catch (error) {
       console.error(error);
     }
@@ -85,7 +111,10 @@ const Login = () => {
             <button className="btn btn-primary w-[35%]" onClick={handleLogin}>
               Login
             </button>
-            <button className="btn btn-outline btn-primary w-[35%]">
+            <button
+              className="btn btn-outline btn-primary w-[35%]"
+              onClick={handleLogout}
+            >
               Cancel
             </button>
           </div>
