@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("donaldtrump@gmail.com");
+  const [password, setPassword] = useState("Donaldtrump@123!");
+  const [error, setError] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -35,19 +36,7 @@ const Login = () => {
       dispatch(addUser(res.data));
       navigate("/");
     } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      await axios.post(BASE_URL + "/logout", null, {
-        withCredentials: true,
-      });
-      dispatch(addUser(null));
-      setEmail("");
-      setPassword("");
-    } catch (error) {
+      setError(error?.response?.data);
       console.error(error);
     }
   };
@@ -57,7 +46,7 @@ const Login = () => {
       <div className="card bg-base-300 w-96 shadow-xl">
         <div className="card-body">
           <h2 className="card-title justify-center">Login</h2>
-          <div className="flex flex-col gap-4 my-6">
+          <div className="flex flex-col gap-2 my-4">
             <div>
               <div className="label">
                 <span className="label-text">Email</span>
@@ -107,14 +96,12 @@ const Login = () => {
               </label>
             </div>
           </div>
+          <div className="mb-4 h-5 text-red-500">{error && <p>{error}</p>}</div>
           <div className="card-actions justify-between">
             <button className="btn btn-primary w-[35%]" onClick={handleLogin}>
               Login
             </button>
-            <button
-              className="btn btn-outline btn-primary w-[35%]"
-              onClick={handleLogout}
-            >
+            <button className="btn btn-outline btn-primary w-[35%]">
               Cancel
             </button>
           </div>
