@@ -8,6 +8,8 @@ import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 
 const EditProfile = ({ user }) => {
+  const { _id } = user;
+
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [age, setAge] = useState(user.age);
@@ -70,12 +72,12 @@ const EditProfile = ({ user }) => {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-evenly items-center mb-4">
-        <div className="flex justify-center my-10">
-          <div className="card bg-base-300 w-96 shadow-xl">
+      <div className="flex flex-col md:flex-row items-center justify-center">
+        <div className="flex justify-center m-10">
+          <div className="card bg-base-300 shadow-xl w-auto">
             <div className="card-body">
               <h2 className="card-title justify-center">Edit Profile</h2>
-              <div className="flex flex-col gap-2 my-3">
+              <div className="gap-2 my-3 grid grid-cols-2">
                 {/* First Name */}
                 <div>
                   <div className="label">
@@ -121,21 +123,6 @@ const EditProfile = ({ user }) => {
                   </label>
                 </div>
 
-                {/* URL */}
-                <div>
-                  <div className="label">
-                    <span className="label-text">Url</span>
-                  </div>
-                  <label className="input input-bordered flex items-center gap-2">
-                    <input
-                      type="text"
-                      className="grow"
-                      value={url}
-                      onChange={(e) => setUrl(e.target.value)}
-                    />
-                  </label>
-                </div>
-
                 {/* Gender */}
                 <div>
                   <div className="label">
@@ -151,8 +138,23 @@ const EditProfile = ({ user }) => {
                   </label>
                 </div>
 
+                {/* URL */}
+                <div className="col-span-2">
+                  <div className="label">
+                    <span className="label-text">Url</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <input
+                      type="text"
+                      className="grow"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                    />
+                  </label>
+                </div>
+
                 {/* About */}
-                <div>
+                <div className="col-span-2">
                   <div className="label">
                     <span className="label-text">About</span>
                   </div>
@@ -187,7 +189,9 @@ const EditProfile = ({ user }) => {
           </div>
         </div>
 
-        <UserCard user={{ firstName, lastName, age, gender, about, url }} />
+        <UserCard
+          user={{ firstName, lastName, age, gender, about, url, _id }}
+        />
       </div>
       {showToast && (
         <div className="toast toast-top toast-center">
@@ -208,6 +212,7 @@ EditProfile.propTypes = {
     about: PropTypes.string.isRequired,
     age: PropTypes.number.isRequired,
     gender: PropTypes.string.isRequired,
+    _id: PropTypes.string.isRequired,
   }).isRequired,
 };
 

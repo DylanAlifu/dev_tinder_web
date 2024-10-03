@@ -30,7 +30,6 @@ const Requests = () => {
         withCredentials: true,
       });
       dispatch(addRequest(res?.data?.data));
-      console.log(res.data);
     } catch (error) {
       console.log(error);
     }
