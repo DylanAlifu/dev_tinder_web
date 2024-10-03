@@ -5,6 +5,7 @@ import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
@@ -14,13 +15,14 @@ const EditProfile = ({ user }) => {
   const [gender, setGender] = useState(user.gender);
   const [about, setAbout] = useState(user.about);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSave = async () => {
     setError(""); // Clear previous errors
-    setSuccess(""); // Clear previous success message
+    setShowToast(false); // Hide any toasts
 
     if (!firstName || !lastName || !age || !url || !gender || !about) {
       setError("All fields are required.");
@@ -41,7 +43,12 @@ const EditProfile = ({ user }) => {
       );
 
       dispatch(addUser(res?.data?.data));
-      setSuccess("Profile updated successfully!"); // Display success message
+      setShowToast(true);
+
+      const i = setTimeout(() => {
+        setShowToast(false);
+        clearTimeout(i);
+      }, 3000);
     } catch (error) {
       setError(error.message);
     }
@@ -55,127 +62,141 @@ const EditProfile = ({ user }) => {
     setGender(user.gender);
     setAbout(user.about);
     setError(""); // Clear any errors
-    setSuccess(""); // Clear success message
+    setShowToast(false); // Hide any toasts
+
+    // redirect to feed page
+    navigate("/");
   };
 
   return (
-    <div className="flex flex-col md:flex-row justify-evenly items-center mb-4">
-      <div className="flex justify-center my-10">
-        <div className="card bg-base-300 w-96 shadow-xl">
-          <div className="card-body">
-            <h2 className="card-title justify-center">Edit Profile</h2>
-            <div className="flex flex-col gap-2 my-3">
-              {/* First Name */}
-              <div>
-                <div className="label">
-                  <span className="label-text">First Name</span>
+    <>
+      <div className="flex flex-col md:flex-row justify-evenly items-center mb-4">
+        <div className="flex justify-center my-10">
+          <div className="card bg-base-300 w-96 shadow-xl">
+            <div className="card-body">
+              <h2 className="card-title justify-center">Edit Profile</h2>
+              <div className="flex flex-col gap-2 my-3">
+                {/* First Name */}
+                <div>
+                  <div className="label">
+                    <span className="label-text">First Name</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <input
+                      type="text"
+                      className="grow"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  </label>
                 </div>
-                <label className="input input-bordered flex items-center gap-2">
-                  <input
-                    type="text"
-                    className="grow"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+
+                {/* Last Name */}
+                <div>
+                  <div className="label">
+                    <span className="label-text">Last Name</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <input
+                      type="text"
+                      className="grow"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                {/* Age */}
+                <div>
+                  <div className="label">
+                    <span className="label-text">Age</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <input
+                      type="number"
+                      className="grow"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                {/* URL */}
+                <div>
+                  <div className="label">
+                    <span className="label-text">Url</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <input
+                      type="text"
+                      className="grow"
+                      value={url}
+                      onChange={(e) => setUrl(e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                {/* Gender */}
+                <div>
+                  <div className="label">
+                    <span className="label-text">Gender</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <input
+                      type="text"
+                      className="grow"
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                {/* About */}
+                <div>
+                  <div className="label">
+                    <span className="label-text">About</span>
+                  </div>
+                  <textarea
+                    className="textarea textarea-bordered w-full"
+                    value={about}
+                    onChange={(e) => setAbout(e.target.value)}
                   />
-                </label>
-              </div>
-
-              {/* Last Name */}
-              <div>
-                <div className="label">
-                  <span className="label-text">Last Name</span>
                 </div>
-                <label className="input input-bordered flex items-center gap-2">
-                  <input
-                    type="text"
-                    className="grow"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </label>
               </div>
 
-              {/* Age */}
-              <div>
-                <div className="label">
-                  <span className="label-text">Age</span>
-                </div>
-                <label className="input input-bordered flex items-center gap-2">
-                  <input
-                    type="number"
-                    className="grow"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                  />
-                </label>
+              {/* Display errors or success messages */}
+              <div className="mb-4 h-5">
+                {error && <div className="text-red-500">{error}</div>}
               </div>
 
-              {/* URL */}
-              <div>
-                <div className="label">
-                  <span className="label-text">Url</span>
-                </div>
-                <label className="input input-bordered flex items-center gap-2">
-                  <input
-                    type="text"
-                    className="grow"
-                    value={url}
-                    onChange={(e) => setUrl(e.target.value)}
-                  />
-                </label>
+              <div className="card-actions justify-between">
+                <button
+                  className="btn btn-primary w-[35%]"
+                  onClick={handleSave}
+                >
+                  Save
+                </button>
+                <button
+                  className="btn btn-outline btn-primary w-[35%]"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </button>
               </div>
-
-              {/* Gender */}
-              <div>
-                <div className="label">
-                  <span className="label-text">Gender</span>
-                </div>
-                <label className="input input-bordered flex items-center gap-2">
-                  <input
-                    type="text"
-                    className="grow"
-                    value={gender}
-                    onChange={(e) => setGender(e.target.value)}
-                  />
-                </label>
-              </div>
-
-              {/* About */}
-              <div>
-                <div className="label">
-                  <span className="label-text">About</span>
-                </div>
-                <textarea
-                  className="textarea textarea-bordered w-full"
-                  value={about}
-                  onChange={(e) => setAbout(e.target.value)}
-                />
-              </div>
-            </div>
-
-            {/* Display errors or success messages */}
-            <div className="mb-4 h-5">
-              {error && <div className="text-red-500">{error}</div>}
-              {success && <div className="text-green-500">{success}</div>}
-            </div>
-
-            <div className="card-actions justify-between">
-              <button className="btn btn-primary w-[35%]" onClick={handleSave}>
-                Save
-              </button>
-              <button
-                className="btn btn-outline btn-primary w-[35%]"
-                onClick={handleCancel}
-              >
-                Cancel
-              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      <UserCard user={{ firstName, lastName, age, gender, about, url }} />
-    </div>
+        <UserCard user={{ firstName, lastName, age, gender, about, url }} />
+      </div>
+      {showToast && (
+        <div className="toast toast-top toast-center">
+          <div className="alert alert-success">
+            <span>Profile Saved successfully.</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
