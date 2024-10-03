@@ -6,20 +6,17 @@ import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 
 const Login = () => {
-  const [email, setEmail] = useState("dylanali@gmail.com");
-  const [password, setPassword] = useState("Dylanali@123");
+  const [isLoginForm, setIsLoginForm] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [age, setAge] = useState("");
+  const [gender, setGender] = useState("");
   const [error, setError] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-  };
-
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-  };
 
   const handleLogin = async () => {
     try {
@@ -41,11 +38,37 @@ const Login = () => {
     }
   };
 
+  const handleSignup = async () => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/signup",
+        {
+          email,
+          password,
+          firstName,
+          lastName,
+          age,
+          gender,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      dispatch(addUser(res.data.data));
+      navigate("/profile");
+    } catch (error) {
+      setError(error?.response?.data);
+      console.error(error);
+    }
+  };
+
   return (
     <div className="flex justify-center my-10">
-      <div className="card bg-base-300 w-96 shadow-xl">
+      <div className="card bg-base-300 w-full md:w-[50%] shadow-xl mx-2">
         <div className="card-body">
-          <h2 className="card-title justify-center">Login</h2>
+          <h2 className="card-title justify-center">
+            {isLoginForm ? "Login" : "Sign Up"}
+          </h2>
           <div className="flex flex-col gap-2 my-4">
             <div>
               <div className="label">
@@ -65,10 +88,86 @@ const Login = () => {
                   type="email"
                   className="grow"
                   value={email}
-                  onChange={handleEmailChange}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </label>
             </div>
+
+            {isLoginForm ? null : (
+              <div className="md:grid grid-cols-2 gap-4">
+                <div className="col-span-1">
+                  <div className="label">
+                    <span className="label-text">First Name</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      className="h-4 w-4 opacity-70"
+                    >
+                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                    </svg>
+                    <input
+                      type="text"
+                      className="grow"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                <div className="col-span-1">
+                  <div className="label">
+                    <span className="label-text">Last Name</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 16 16"
+                      fill="currentColor"
+                      className="h-4 w-4 opacity-70"
+                    >
+                      <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                    </svg>
+                    <input
+                      type="text"
+                      className="grow"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                <div className="col-span-1">
+                  <div className="label">
+                    <span className="label-text">Age</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <input
+                      type="number"
+                      className="grow"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                    />
+                  </label>
+                </div>
+
+                <div className="col-span-1">
+                  <div className="label">
+                    <span className="label-text">Gender</span>
+                  </div>
+                  <label className="input input-bordered flex items-center gap-2">
+                    <input
+                      type="text"
+                      className="grow"
+                      value={gender}
+                      onChange={(e) => setGender(e.target.value)}
+                    />
+                  </label>
+                </div>
+              </div>
+            )}
 
             <div>
               <div className="label">
@@ -91,20 +190,31 @@ const Login = () => {
                   type="password"
                   className="grow"
                   value={password}
-                  onChange={handlePasswordChange}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </label>
             </div>
           </div>
           <div className="mb-4 h-5 text-red-500">{error && <p>{error}</p>}</div>
           <div className="card-actions justify-between">
-            <button className="btn btn-primary w-[35%]" onClick={handleLogin}>
-              Login
+            <button
+              className="btn btn-primary w-[35%]"
+              onClick={isLoginForm ? handleLogin : handleSignup}
+            >
+              {isLoginForm ? "Login" : "Sign Up"}
             </button>
             <button className="btn btn-outline btn-primary w-[35%]">
               Cancel
             </button>
           </div>
+          <p
+            className="mt-5 text-sm cursor-pointer underline text-center"
+            onClick={() => setIsLoginForm(!isLoginForm)}
+          >
+            {isLoginForm
+              ? "New User? Signup here"
+              : "Already have an account? Login here"}
+          </p>
         </div>
       </div>
     </div>

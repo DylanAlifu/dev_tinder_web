@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import UserCard from "./UserCard";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -55,6 +55,11 @@ const EditProfile = ({ user }) => {
       setError(error.message);
     }
   };
+
+  useEffect(() => {
+    dispatch(addUser(user));
+  }, [user, dispatch]);
+  
 
   const handleCancel = () => {
     setFirstName(user.firstName);
