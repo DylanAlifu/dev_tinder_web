@@ -40,13 +40,13 @@ const Connections = () => {
 
         return (
           <div key={firstName} className="flex justify-center">
-            <div className="flex flex-row gap-8 items-center m-10  p-4 rounded-lg bg-base-300 md:w-[60%]">
+            <div className="flex flex-row gap-8 items-center m-4 p-4 rounded-lg bg-base-300 md:w-[60%]">
               <img
                 src={url}
                 alt={`${firstName} ${lastName}`}
                 className="w-32 h-32 object-cover rounded-full"
               />
-              <div className="flex flex-col md:items-start gap-3">
+              <div className="flex flex-col text-left md:items-start gap-3">
                 <h2 className="font-bold text-xl">
                   {firstName} {lastName}
                 </h2>
