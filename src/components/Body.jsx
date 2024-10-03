@@ -10,7 +10,6 @@ import { useEffect } from "react";
 const Body = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const userData = useSelector((store) => store.user);
 
   const fetchUser = async () => {
@@ -26,7 +25,6 @@ const Body = () => {
       if (error.response.status === 401) {
         navigate("/login");
       }
-
       console.error(error);
     }
   };
@@ -36,9 +34,14 @@ const Body = () => {
   }, []);
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <NavBar />
-      <Outlet />
+
+      {/* Main content area */}
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+
       <Footer />
     </div>
   );
