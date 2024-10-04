@@ -1,12 +1,13 @@
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnection } from "../utils/connectionSlice";
 
 const Connections = () => {
   const dispatch = useDispatch();
   const connections = useSelector((store) => store.connection);
+  const [loading, setLoading] = useState(true); // Add a loading state
 
   const fetchConnections = async () => {
     try {
@@ -16,12 +17,22 @@ const Connections = () => {
       dispatch(addConnection(res?.data?.data));
     } catch (error) {
       console.log(error.message);
+    } finally {
+      setLoading(false); // Set loading to false after fetching data
     }
   };
 
   useEffect(() => {
     fetchConnections();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center my-10">
+        <h1 className="font-bold text-2xl">Loading...</h1>
+      </div>
+    );
+  }
 
   if (!connections || connections.length === 0) {
     return (
